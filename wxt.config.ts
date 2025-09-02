@@ -5,5 +5,6 @@ export default defineConfig({
     name: "YouTube Auto Toggle Live Chat",
   },
   modules: ["@wxt-dev/module-solid"],
+  imports: false,
   srcDir: "src",
 });
