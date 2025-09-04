@@ -1,4 +1,5 @@
 import { defineUnlistedScript } from "#imports";
+import { messenger } from "@/utils/messaging";
 
 declare global {
   interface DocumentEventMap {
@@ -27,6 +28,9 @@ type LiveChatRenderer = {
 };
 
 export default defineUnlistedScript(() => {
+  let isLiveChatCollapsed = false;
+  let isLiveChatReplayExpanded = false;
+
   const handler = (ev: YTPageDataFetchedEvent) => {
     const liveChatRenderer =
       ev.detail.pageData.response?.contents?.twoColumnWatchNextResults
@@ -43,4 +47,12 @@ export default defineUnlistedScript(() => {
   };
 
   document.addEventListener("yt-page-data-fetched", handler);
+
+  messenger.onMessage("liveChatCollapsed", ({ data }) => {
+    isLiveChatCollapsed = data;
+  });
+
+  messenger.onMessage("liveChatReplayExpanded", ({ data }) => {
+    isLiveChatReplayExpanded = data;
+  });
 });

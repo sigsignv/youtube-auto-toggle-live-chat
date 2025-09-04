@@ -1,14 +1,10 @@
-import { defineExtensionMessaging } from "@webext-core/messaging";
+import { defineCustomEventMessaging } from "@webext-core/messaging/page";
 
-interface ProtocolMap {
-  load(): LiveChatOptions;
-  store(options: LiveChatOptions): void;
+interface MessengerSchema {
+  liveChatCollapsed(value: boolean): void;
+  liveChatReplayExpanded(value: boolean): void;
 }
 
-export type LiveChatOptions = {
-  liveChatCollapsed?: boolean;
-  liveChatReplayExpanded?: boolean;
-};
-
-export const { sendMessage, onMessage } =
-  defineExtensionMessaging<ProtocolMap>();
+export const messenger = defineCustomEventMessaging<MessengerSchema>({
+  namespace: "youtube-live-chat-default-state-messenger",
+});

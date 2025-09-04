@@ -1,29 +1,29 @@
 import { defineContentScript, injectScript } from "#imports";
-import { onMessage } from "@/utils/messaging";
+import { messenger } from "@/utils/messaging";
+import { liveChatCollapsed, liveChatReplayExpanded } from "@/utils/storage";
 
 export default defineContentScript({
   matches: ["https://www.youtube.com/*"],
   runAt: "document_start",
   allFrames: false,
 
-  async main() {
-    const key = "ext:live-chat-display-options";
-
-    onMessage("load", () => {
-      const options = localStorage.getItem(key);
-      console.log({ kind: "load", options });
-      return options ? JSON.parse(options) : {};
-    });
-
-    onMessage("store", ({ data }) => {
-      console.log({ kind: "store", data });
-      if (data.liveChatCollapsed || data.liveChatReplayExpanded) {
-        localStorage.setItem(key, JSON.stringify(data));
-      } else {
-        localStorage.removeItem(key);
-      }
-    });
-
+  async main(ctx) {
     await injectScript("/injected.js");
+
+    const unwatch = liveChatCollapsed.watch((value) =>
+      messenger.sendMessage("liveChatCollapsed", value),
+    );
+    ctx.onInvalidated(() => unwatch());
+
+    const unwatchReplay = liveChatReplayExpanded.watch((value) =>
+      messenger.sendMessage("liveChatReplayExpanded", value),
+    );
+    ctx.onInvalidated(() => unwatchReplay());
+
+    const isLiveChatCollapsed = await liveChatCollapsed.getValue();
+    messenger.sendMessage("liveChatCollapsed", isLiveChatCollapsed);
+
+    const isLiveChatReplayExpanded = await liveChatReplayExpanded.getValue();
+    messenger.sendMessage("liveChatReplayExpanded", isLiveChatReplayExpanded);
   },
 });

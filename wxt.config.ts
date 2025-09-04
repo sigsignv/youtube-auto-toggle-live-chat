@@ -3,7 +3,7 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   manifest: {
     name: "YouTube Auto Toggle Live Chat",
-    permissions: ["activeTab"],
+    permissions: ["storage"],
     web_accessible_resources: [
       {
         resources: ["injected.js"],
