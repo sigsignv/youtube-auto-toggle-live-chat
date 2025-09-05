@@ -1,6 +1,8 @@
 import { createSignal, onMount } from "solid-js";
 import { liveChatCollapsed } from "@/utils/storage";
 
+import "./App.css";
+
 function App() {
   const [isLiveChatCollapsed, setIsLiveChatCollapsed] = createSignal(false);
 
