@@ -9,18 +9,16 @@ function App() {
     createSignal(false);
 
   onMount(async () => {
-    const liveChatCollapsedPromise = async () => {
-      const value = await liveChatCollapsed.getValue();
-      setIsLiveChatCollapsed(value);
-    };
-    const liveChatReplayExpandedPromise = async () => {
-      const value = await liveChatReplayExpanded.getValue();
-      setIsLiveChatReplayExpanded(value);
-    };
+    const fetchLiveChatCollapsed = liveChatCollapsed
+      .getValue()
+      .then((value) => setIsLiveChatCollapsed(value));
+    const fetchLiveChatReplayExpanded = liveChatReplayExpanded
+      .getValue()
+      .then((value) => setIsLiveChatReplayExpanded(value));
 
     await Promise.allSettled([
-      liveChatCollapsedPromise(),
-      liveChatReplayExpandedPromise(),
+      fetchLiveChatCollapsed,
+      fetchLiveChatReplayExpanded,
     ]);
   });
 
