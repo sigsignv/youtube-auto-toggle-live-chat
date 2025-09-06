@@ -40,7 +40,10 @@ export default defineUnlistedScript(() => {
     }
 
     const { initialDisplayState } = liveChatRenderer;
-    if (initialDisplayState === "LIVE_CHAT_DISPLAY_STATE_EXPANDED") {
+    if (
+      initialDisplayState === "LIVE_CHAT_DISPLAY_STATE_EXPANDED" &&
+      isLiveChatCollapsed
+    ) {
       liveChatRenderer.initialDisplayState =
         "LIVE_CHAT_DISPLAY_STATE_COLLAPSED";
     }
@@ -55,4 +58,6 @@ export default defineUnlistedScript(() => {
   messenger.onMessage("liveChatReplayExpanded", ({ data }) => {
     isLiveChatReplayExpanded = data;
   });
+
+  messenger.sendMessage("isReady");
 });

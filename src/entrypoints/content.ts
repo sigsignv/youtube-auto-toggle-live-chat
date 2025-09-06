@@ -20,10 +20,20 @@ export default defineContentScript({
     );
     ctx.onInvalidated(() => unwatchReplay());
 
-    const isLiveChatCollapsed = await liveChatCollapsed.getValue();
-    messenger.sendMessage("liveChatCollapsed", isLiveChatCollapsed);
+    messenger.onMessage("isReady", async () => {
+      const sendLiveChatCollapsed = liveChatCollapsed
+        .getValue()
+        .then((value) => messenger.sendMessage("liveChatCollapsed", value));
+      const sendLiveChatReplayExpanded = liveChatReplayExpanded
+        .getValue()
+        .then((value) =>
+          messenger.sendMessage("liveChatReplayExpanded", value),
+        );
 
-    const isLiveChatReplayExpanded = await liveChatReplayExpanded.getValue();
-    messenger.sendMessage("liveChatReplayExpanded", isLiveChatReplayExpanded);
+      await Promise.allSettled([
+        sendLiveChatCollapsed,
+        sendLiveChatReplayExpanded,
+      ]);
+    });
   },
 });
