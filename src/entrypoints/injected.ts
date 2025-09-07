@@ -30,7 +30,7 @@ export default defineUnlistedScript(() => {
     const liveChatRenderer =
       ev.detail.pageData.response?.contents?.twoColumnWatchNextResults
         ?.conversationBar?.liveChatRenderer;
-    if (!liveChatRenderer) {
+    if (!liveChatRenderer || liveChatRenderer.isReplay) {
       return;
     }
 
