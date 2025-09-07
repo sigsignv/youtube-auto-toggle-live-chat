@@ -16,7 +16,6 @@ type PageData = {
 
 export default defineUnlistedScript(() => {
   let isLiveChatCollapsed = false;
-  let isLiveChatReplayExpanded = false;
 
   const handler = (ev: YTPageDataFetchedEvent) => {
     const liveChatRenderer =
@@ -40,10 +39,6 @@ export default defineUnlistedScript(() => {
 
   messenger.onMessage("liveChatCollapsed", ({ data }) => {
     isLiveChatCollapsed = data;
-  });
-
-  messenger.onMessage("liveChatReplayExpanded", ({ data }) => {
-    isLiveChatReplayExpanded = data;
   });
 
   messenger.sendMessage("isReady");
