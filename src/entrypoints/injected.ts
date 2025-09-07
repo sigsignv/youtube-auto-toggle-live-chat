@@ -1,6 +1,6 @@
 import { defineUnlistedScript } from "#imports";
 import { messenger } from "@/utils/messaging";
-import type { LiveChatRenderer } from "@/utils/types";
+import type { WatchPageResponse } from "@/utils/types";
 
 declare global {
   interface DocumentEventMap {
@@ -11,15 +11,7 @@ declare global {
 type YTPageDataFetchedEvent = CustomEvent<{ pageData: PageData }>;
 
 type PageData = {
-  response?: {
-    contents?: {
-      twoColumnWatchNextResults?: {
-        conversationBar?: {
-          liveChatRenderer?: LiveChatRenderer;
-        };
-      };
-    };
-  };
+  response?: WatchPageResponse;
 };
 
 export default defineUnlistedScript(() => {
