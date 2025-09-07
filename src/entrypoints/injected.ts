@@ -1,5 +1,6 @@
 import { defineUnlistedScript } from "#imports";
 import { messenger } from "@/utils/messaging";
+import type { LiveChatRenderer } from "@/utils/types";
 
 declare global {
   interface DocumentEventMap {
@@ -19,12 +20,6 @@ type PageData = {
       };
     };
   };
-};
-
-type LiveChatRenderer = {
-  initialDisplayState:
-    | "LIVE_CHAT_DISPLAY_STATE_COLLAPSED"
-    | "LIVE_CHAT_DISPLAY_STATE_EXPANDED";
 };
 
 export default defineUnlistedScript(() => {
