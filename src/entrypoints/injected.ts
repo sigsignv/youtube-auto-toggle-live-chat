@@ -1,5 +1,5 @@
 import { defineUnlistedScript } from "#imports";
-import { messenger } from "@/utils/messaging";
+import { channel } from "@/utils/messaging";
 import type { WatchPageResponse } from "@/utils/types";
 
 declare global {
@@ -14,8 +14,12 @@ type PageData = {
   response?: WatchPageResponse;
 };
 
-export default defineUnlistedScript(() => {
-  let isLiveChatCollapsed = false;
+export default defineUnlistedScript(async () => {
+  let isEnabled = await channel.sendMessage("get");
+
+  channel.onMessage("set", ({ data }) => {
+    isEnabled = data;
+  });
 
   const handler = (ev: YTPageDataFetchedEvent) => {
     const liveChatRenderer =
@@ -28,7 +32,7 @@ export default defineUnlistedScript(() => {
     const { initialDisplayState } = liveChatRenderer;
     if (
       initialDisplayState === "LIVE_CHAT_DISPLAY_STATE_EXPANDED" &&
-      isLiveChatCollapsed
+      isEnabled
     ) {
       liveChatRenderer.initialDisplayState =
         "LIVE_CHAT_DISPLAY_STATE_COLLAPSED";
@@ -36,10 +40,4 @@ export default defineUnlistedScript(() => {
   };
 
   document.addEventListener("yt-page-data-fetched", handler);
-
-  messenger.onMessage("liveChatCollapsed", ({ data }) => {
-    isLiveChatCollapsed = data;
-  });
-
-  messenger.sendMessage("isReady");
 });

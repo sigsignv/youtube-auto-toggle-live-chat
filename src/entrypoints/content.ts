@@ -1,5 +1,5 @@
 import { defineContentScript, injectScript } from "#imports";
-import { messenger } from "@/utils/messaging";
+import { channel } from "@/utils/messaging";
 import { liveChatCollapsed, liveChatReplayExpanded } from "@/utils/storage";
 import type { WatchPageResponse } from "@/utils/types";
 
@@ -17,20 +17,16 @@ export default defineContentScript({
   allFrames: false,
 
   async main(ctx) {
+    channel.onMessage("get", async () => {
+      return await liveChatCollapsed.getValue();
+    });
+
     await injectScript("/injected.js");
 
     const unwatch = liveChatCollapsed.watch((value) =>
-      messenger.sendMessage("liveChatCollapsed", value),
+      channel.sendMessage("set", value),
     );
     ctx.onInvalidated(() => unwatch());
-
-    messenger.onMessage("isReady", async () => {
-      const sendLiveChatCollapsed = liveChatCollapsed
-        .getValue()
-        .then((value) => messenger.sendMessage("liveChatCollapsed", value));
-
-      await Promise.allSettled([sendLiveChatCollapsed]);
-    });
 
     ctx.addEventListener(document, "yt-navigate-finish", async (ev) => {
       if (!hasLiveChatReplay(ev)) {
