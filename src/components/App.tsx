@@ -12,9 +12,12 @@ function App() {
     const fetchLiveChatCollapsed = liveChatCollapsed
       .getValue()
       .then((value) => setIsLiveChatCollapsed(value));
+    liveChatCollapsed.watch((value) => setIsLiveChatCollapsed(value));
+
     const fetchLiveChatReplayExpanded = liveChatReplayExpanded
       .getValue()
       .then((value) => setIsLiveChatReplayExpanded(value));
+    liveChatReplayExpanded.watch((value) => setIsLiveChatReplayExpanded(value));
 
     await Promise.allSettled([
       fetchLiveChatCollapsed,
