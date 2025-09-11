@@ -1,4 +1,4 @@
-# YouTube auto toggle live chat
+# YouTube Live Chat Collapsed by Default
 
 ## Author
 

@@ -6,5 +6,5 @@ interface ChannelSchema {
 }
 
 export const channel = defineCustomEventMessaging<ChannelSchema>({
-  namespace: "youtube-live-chat-auto-collapsed-config-channel",
+  namespace: "youtube-live-chat-collapsed-by-default",
 });
