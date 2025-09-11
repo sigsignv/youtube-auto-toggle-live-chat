@@ -1,6 +1,6 @@
 import { defineContentScript, injectScript } from "#imports";
 import { channel } from "@/utils/messaging";
-import { liveChatCollapsed, liveChatReplayExpanded } from "@/utils/storage";
+import { liveChatCollapsed, liveChatReplayCollapsed } from "@/utils/storage";
 import type { WatchPageResponse } from "@/utils/types";
 
 declare global {
@@ -33,8 +33,8 @@ export default defineContentScript({
         return;
       }
 
-      const value = await liveChatReplayExpanded.getValue();
-      if (!value) {
+      const value = await liveChatReplayCollapsed.getValue();
+      if (value) {
         return;
       }
 

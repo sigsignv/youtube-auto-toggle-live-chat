@@ -1,28 +1,24 @@
 import { createSignal, onMount } from "solid-js";
-import { liveChatCollapsed, liveChatReplayExpanded } from "@/utils/storage";
+import { liveChatCollapsed, liveChatReplayCollapsed } from "@/utils/storage";
 
 import "./App.css";
 
 function App() {
-  const [isLiveChatCollapsed, setIsLiveChatCollapsed] = createSignal(false);
-  const [isLiveChatReplayExpanded, setIsLiveChatReplayExpanded] =
-    createSignal(false);
+  const [isLiveCollapsed, setIsLiveCollapsed] = createSignal(true);
+  const [isReplayCollapsed, setIsReplayCollapsed] = createSignal(true);
 
   onMount(async () => {
-    const fetchLiveChatCollapsed = liveChatCollapsed
+    const fetchLiveCollapsed = liveChatCollapsed
       .getValue()
-      .then((value) => setIsLiveChatCollapsed(value));
-    liveChatCollapsed.watch((value) => setIsLiveChatCollapsed(value));
+      .then((value) => setIsLiveCollapsed(value));
+    liveChatCollapsed.watch((value) => setIsLiveCollapsed(value));
 
-    const fetchLiveChatReplayExpanded = liveChatReplayExpanded
+    const fetchReplayCollapsed = liveChatReplayCollapsed
       .getValue()
-      .then((value) => setIsLiveChatReplayExpanded(value));
-    liveChatReplayExpanded.watch((value) => setIsLiveChatReplayExpanded(value));
+      .then((value) => setIsReplayCollapsed(value));
+    liveChatReplayCollapsed.watch((value) => setIsReplayCollapsed(value));
 
-    await Promise.allSettled([
-      fetchLiveChatCollapsed,
-      fetchLiveChatReplayExpanded,
-    ]);
+    await Promise.allSettled([fetchLiveCollapsed, fetchReplayCollapsed]);
   });
 
   return (
@@ -33,7 +29,7 @@ function App() {
           Live chat auto-expanded :
           <input
             type="checkbox"
-            checked={!isLiveChatCollapsed()}
+            checked={!isLiveCollapsed()}
             onChange={async (e) => {
               await liveChatCollapsed.setValue(!e.target.checked);
             }}
@@ -46,9 +42,9 @@ function App() {
           Live chat replay auto-expanded :
           <input
             type="checkbox"
-            checked={isLiveChatReplayExpanded()}
+            checked={!isReplayCollapsed()}
             onChange={async (e) => {
-              await liveChatReplayExpanded.setValue(e.target.checked);
+              await liveChatReplayCollapsed.setValue(!e.target.checked);
             }}
           />
         </label>
