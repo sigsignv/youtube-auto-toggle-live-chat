@@ -10,33 +10,34 @@ declare global {
   }
 }
 
+type PageDataFetchedEvent = DocumentEventMap["yt-page-data-fetched"];
+
 export default defineUnlistedScript(async () => {
-  let isEnabled = await channel.sendMessage("get");
+  let setCollapse = await channel.sendMessage("get");
 
   channel.onMessage("set", ({ data }) => {
-    isEnabled = data;
+    setCollapse = data;
   });
 
-  const handler = (ev: DocumentEventMap["yt-page-data-fetched"]) => {
-    const liveChatRenderer = getLiveChatRenderer(ev);
-    if (!liveChatRenderer || liveChatRenderer.isReplay) {
+  const handler = (ev: PageDataFetchedEvent) => {
+    const liveChat = extractLiveChatRenderer(ev);
+    if (!liveChat || liveChat.isReplay) {
       return;
     }
 
-    if (isEnabled && isLiveChatExpanded(liveChatRenderer)) {
-      liveChatRenderer.initialDisplayState =
-        "LIVE_CHAT_DISPLAY_STATE_COLLAPSED";
+    if (setCollapse && isInitiallyExpanded(liveChat)) {
+      liveChat.initialDisplayState = "LIVE_CHAT_DISPLAY_STATE_COLLAPSED";
     }
   };
 
   document.addEventListener("yt-page-data-fetched", handler);
 });
 
-function getLiveChatRenderer(ev: DocumentEventMap["yt-page-data-fetched"]) {
-  return ev.detail.pageData.response?.contents?.twoColumnWatchNextResults
+function extractLiveChatRenderer(event: PageDataFetchedEvent) {
+  return event.detail.pageData.response?.contents?.twoColumnWatchNextResults
     ?.conversationBar?.liveChatRenderer;
 }
 
-function isLiveChatExpanded(renderer: LiveChatRenderer) {
-  return renderer.initialDisplayState === "LIVE_CHAT_DISPLAY_STATE_EXPANDED";
+function isInitiallyExpanded(liveChat: LiveChatRenderer) {
+  return liveChat.initialDisplayState === "LIVE_CHAT_DISPLAY_STATE_EXPANDED";
 }
