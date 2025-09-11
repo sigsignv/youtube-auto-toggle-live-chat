@@ -17,14 +17,14 @@ export default defineContentScript({
   allFrames: false,
 
   async main(ctx) {
-    channel.onMessage("get", async () => {
-      return await liveChatCollapsed.getValue();
+    channel.onMessage("fetch", () => {
+      return liveChatCollapsed.getValue();
     });
 
     await injectScript("/injected.js");
 
     const unwatch = liveChatCollapsed.watch((value) =>
-      channel.sendMessage("set", value),
+      channel.sendMessage("sync", value),
     );
     ctx.onInvalidated(() => unwatch());
 

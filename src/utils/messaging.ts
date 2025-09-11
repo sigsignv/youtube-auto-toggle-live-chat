@@ -1,8 +1,8 @@
 import { defineCustomEventMessaging } from "@webext-core/messaging/page";
 
 interface ChannelSchema {
-  get(): Promise<boolean>;
-  set(value: boolean): void;
+  fetch(): boolean;
+  sync(value: boolean): void;
 }
 
 export const channel = defineCustomEventMessaging<ChannelSchema>({
