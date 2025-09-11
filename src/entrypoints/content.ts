@@ -11,15 +11,15 @@ declare global {
   }
 }
 
+type NavigationFinishEvent = DocumentEventMap["yt-navigate-finish"];
+
 export default defineContentScript({
   matches: ["https://www.youtube.com/*"],
   runAt: "document_start",
   allFrames: false,
 
   async main(ctx) {
-    channel.onMessage("fetch", () => {
-      return liveChatCollapsed.getValue();
-    });
+    channel.onMessage("fetch", () => liveChatCollapsed.getValue());
 
     await injectScript("/injected.js");
 
@@ -29,12 +29,17 @@ export default defineContentScript({
     ctx.onInvalidated(() => unwatch());
 
     ctx.addEventListener(document, "yt-navigate-finish", async (ev) => {
-      if (!hasLiveChatReplay(ev)) {
+      try {
+        const shouldCollapse = await liveChatReplayCollapsed.getValue();
+        if (shouldCollapse) {
+          return;
+        }
+      } catch {
+        console.log("[Collapsed by Default] Unable to access storage");
         return;
       }
 
-      const value = await liveChatReplayCollapsed.getValue();
-      if (value) {
+      if (!hasLiveChatReplay(ev)) {
         return;
       }
 
@@ -51,10 +56,14 @@ export default defineContentScript({
         once: true,
       });
     });
+
+    ctx.onInvalidated(() => {
+      console.log("[Collapsed by Default] Content script unloaded");
+    });
   },
 });
 
-function hasLiveChatReplay(ev: DocumentEventMap["yt-navigate-finish"]) {
+function hasLiveChatReplay(ev: NavigationFinishEvent) {
   return (
     ev.detail.response?.response?.contents?.twoColumnWatchNextResults
       ?.conversationBar?.liveChatRenderer?.isReplay === true
