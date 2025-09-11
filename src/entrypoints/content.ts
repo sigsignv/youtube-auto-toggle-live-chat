@@ -47,6 +47,7 @@ export default defineContentScript({
         const button = findOpenChatButton();
         if (button) {
           button.click();
+          console.debug("[Collapsed by Default] live chat replay expanded");
           clearInterval(id);
         }
       }, 100);

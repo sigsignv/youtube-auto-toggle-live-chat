@@ -27,6 +27,7 @@ export default defineUnlistedScript(async () => {
 
     if (setCollapse && isInitiallyExpanded(liveChat)) {
       liveChat.initialDisplayState = "LIVE_CHAT_DISPLAY_STATE_COLLAPSED";
+      console.debug("[Collapsed by Default] live chat collapsed");
     }
   };
 
