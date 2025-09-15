@@ -24,9 +24,9 @@ function App() {
   return (
     <form>
       <fieldset>
-        <legend>Live streaming</legend>
+        <legend>Live Chat</legend>
         <label>
-          Live chat auto-expanded :
+          Auto expanded:
           <input
             type="checkbox"
             checked={!isLiveCollapsed()}
@@ -37,9 +37,9 @@ function App() {
         </label>
       </fieldset>
       <fieldset>
-        <legend>Live archive / Premieres</legend>
+        <legend>Chat Replay</legend>
         <label>
-          Live chat replay auto-expanded :
+          Auto expanded:
           <input
             type="checkbox"
             checked={!isReplayCollapsed()}
